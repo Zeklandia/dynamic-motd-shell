@@ -25,9 +25,9 @@ if [ ! -f $CONFIGURATION_FILE ];
 then
     echo -e $CONFIGURATION_CONTENT >> $CONFIGURATION_FILE
 fi
-if [ ! -f /usr/bin/dynmotd ];
+if [ ! -f /usr/bin/dynmotd-shell ];
 then
-    ln -s "/usr/local/bin/dynmotd" "/usr/bin/"
+    ln -s "/usr/local/bin/dynmotd-shell" "/usr/bin/dynmotd-shell"
 fi
 PROBED_CONFIGURATION_VERSION=`cat $CONFIGURATION_FILE | grep "CONFIGURATION_VERSION" | cut -d"=" -f2`
 if [ $PROBED_CONFIGURATION_VERSION == $SCRIPT_VERSION ];
