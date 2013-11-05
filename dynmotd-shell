@@ -291,7 +291,7 @@ if [ "$FULLW" == "1" ];
 then
     user_stats=`w | awk '{if(NR == 1)print substr($a,2); else print "" substr($a,1); }'`
 else
-    user_stats=`w | awk 'NR==1' | cut -c2- | cut -d" " -f2-8,10-12`
+    user_stats=`w | awk 'NR==1' | cut -c2- | cut -d" " -f2-`
 fi
 }
 
