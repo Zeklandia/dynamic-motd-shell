@@ -291,7 +291,7 @@ if [ "$FULLW" == "1" ];
 then
     user_stats=`w | awk '{if(NR == 1)print substr($a,2); else print "" substr($a,1); }'`
 else
-    user_stats=`w | awk 'NR==1' | cut -c2- | cut -d" " -f8-`
+    user_stats=`w | awk 'NR==1' | cut -c2- | cut -d" " -f8- | cut -c2-`
 fi
 }
 
@@ -333,19 +333,19 @@ then
     get_weather_zip () {
     weather_zip=$ZIP
     }
-    
+
     get_weather_location () {
     weather_location=`weather $weather_zip | grep 'Current conditions at' | awk '{print $4}'`
     }
-    
+
     get_weather_temp () {
     weather_temperature=`weather $weather_zip | grep 'Temperature:' | awk '{print $2}'`
     }
-    
+
     get_weather_conditions () {
     weather_conditions=`weather $weather_zip | grep 'Weather:' | cut -d: -f2 | cut -c2-`
     }
-    
+
     get_weather_sky_conditions () {
     weather_sky_conditions=`weather $weather_zip | grep 'Sky conditions:' | cut -d: -f2 | cut -c2-`
     }
@@ -454,7 +454,7 @@ $border_color│ └───────────────┘  │"
         echo -e "$border_color│ $title_color$string_weather_location           $border_color│ $data_color$weather_location, $weather_zip"
     fi
 
-echo -e "$border_color│ $title_color$string_weather_temp        $border_color│ $data_color$weather_temperature
+echo -e "$border_color│ $title_color$string_weather_temp        $border_color│ $data_color$weather_temperature \u00B0F
 $border_color│ $title_color$string_weather_conditions            $border_color│ $data_color$weather_conditions"
 
     if [ "$WEATHER_SKY_CONDITIONS" == "1" ];
