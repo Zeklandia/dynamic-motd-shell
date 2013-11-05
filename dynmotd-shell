@@ -1,0 +1,485 @@
+#!/bin/bash
+
+init () {
+reset
+echo -en "Setting Variables..."
+set_vars
+echo -e "                                                      $success"
+echo -en "Linking Script..."
+linker
+echo -e "                                                         $success"
+echo -en "Getting Configuration..."
+get_config
+echo -e "                                                  $success"
+echo -en "Loading Preferences..."
+get_prefs
+echo -e "                                                    $success"
+echo -en "Getting Statuses..."
+get_stats
+echo -e "                                                       $success"
+reset
+}
+
+set_vars () {
+configuration_file=~/.config/dynmotd-shell.conf
+configuration_content="# Configuration for Dynamic-MOTD-Shell\n\n# Settings for Stats\nFULLW=0\n\n# Settings for Banner\nPRINTBAN=0\nBANNER=ban_linux\nCUSTBAN=0\nCUSTBANTEXT=\n\n# Settings for Weather\nWEATHER=1\nWEATHER_LOCATION=0\nWEATHER_SKY_CONDITIONS=0\nZIP=93023\n\n# Settings for Custom Command\nCUSTOM=0\ncustom_command=\nstring_custom_header=\nstring_custom_title=\n\n# Settings for Output Color\ntitle_color=$gray_bold\nborder_color=$black_bold\neq_color=$gray_bold\nheader_color=$cyan_bold\ndata_color=$cyan"
+color_palette
+set_strings
+banner_palette
+}
+
+set_strings () {
+string_sys_stats_header="System Stats"
+string_sys_stats_date_time="Date & Time"
+string_sys_stats_hostname="Hostname"
+string_sys_stats_wlan_ip="WLAN IP"
+string_sys_stats_lan_ip="LAN IP"
+string_sys_stats_kernel_ver="Kernel"
+string_sys_stats_mem_size="Memory"
+string_sys_stats_users_stats="Stats"
+
+string_user_stats_header="Users Stats"
+string_user_stats_username="Username"
+string_user_stats_last_login="Last Login"
+string_user_stats_home_dir="Home Path"
+string_user_stats_proc="Processes"
+
+string_weather_header="Weather Stats"
+string_weather_location="Location"
+string_weather_temp="Temperature"
+string_weather_conditions="Weather"
+string_weather_sky_conditions="Sky"
+}
+
+unset_vars () {
+unset configuration_file
+unset configuration_content
+unset title_color
+unset border_color
+unset eq_color
+unset header_color
+unset data_color
+unset color_default
+unset black
+unset black_bold
+unset black_light
+unset black_italic
+unset black_underlined
+unset red
+unset red_bold
+unset red_light
+unset red_italic
+unset red_underlined
+unset green
+unset green_bold
+unset green_light
+unset green_italic
+unset green_underlined
+unset yellow
+unset yellow_bold
+unset yellow_light
+unset yellow_italic
+unset yellow_underlined
+unset blue
+unset blue_bold
+unset blue_light
+unset blue_italic
+unset blue_underlined
+unset magenta
+unset magenta_bold
+unset magenta_light
+unset magenta_italic
+unset magenta_underlined
+unset cyan
+unset cyan_bold
+unset cyan_light
+unset cyan_italic
+unset cyan_underlined
+unset gray
+unset gray_bold
+unset gray_light
+unset gray_italic
+unset gray_underlined
+unset white
+unset white_bold
+unset white_light
+unset white_italic
+unset white_underlined
+unset ban_linux_big
+unset ban_ubuntu
+unset ban_linux
+unset ban_android
+unset ban_mac
+unset date_time
+unset hostname_text
+unset wlan_ip
+unset lan_ip
+unset kernel_version
+unset user_stats
+unset ram_size
+unset username
+unset last_login
+unset home_path
+unset process_count
+unset process_limit
+unset weather_zip
+unset weather_location
+unset weather_temperature
+unset weather_conditions
+unset weather_sky_conditions
+unset custom_command_output
+unset string_sys_stats_header
+unset string_sys_stats_date_time
+unset string_sys_stats_wlan_ip
+unset string_sys_stats_lan_ip
+unset string_sys_stats_kernel_ver
+unset string_sys_stats_mem_size
+unset string_sys_stats_users_stats
+unset string_user_stats_header
+unset string_user_stats_username
+unset string_user_stats_last_login
+unset string_user_stats_home_dir
+unset string_user_stats_proc
+unset string_weather_header
+unset string_weather_location
+unset string_weather_temp
+unset string_weather_conditions
+unset string_weather_sky_conditions
+}
+
+color_palette () {
+color_default="\e[0;0m"
+black="\e[0;30m"
+black_bold="\e[1;30m"
+black_light="\e[2;30m"
+black_italic="\e[3;30m"
+black_underlined="\e[4;30m"
+red="\e[0;31m"
+red_bold="\e[1;31m"
+red_light="\e[2;31m"
+red_italic="\e[3;31m"
+red_underlined="\e[4;31m"
+green="\e[0;32m"
+green_bold="\e[1;32m"
+green_light="\e[2;32m"
+green_italic="\e[3;32m"
+green_underlined="\e[4;32m"
+yellow="\e[0;33m"
+yellow_bold="\e[1;33m"
+yellow_light="\e[2;33m"
+yellow_italic="\e[3;33m"
+yellow_underlined="\e[4;33m"
+blue="\e[0;34m"
+blue_bold="\e[1;34m"
+blue_light="\e[2;34m"
+blue_italic="\e[3;34m"
+blue_underlined="\e[4;34m"
+magenta="\e[0;35m"
+magenta_bold="\e[1;35m"
+magenta_light="\e[2;35m"
+magenta_italic="\e[3;35m"
+magenta_underlined="\e[4;35m"
+cyan="\e[0;36m"
+cyan_bold="\e[1;36m"
+cyan_light="\e[2;36m"
+cyan_italic="\e[3;36m"
+cyan_underlined="\e[4;36m"
+gray="\e[0;37m"
+gray_bold="\e[1;37m"
+gray_light="\e[2;37m"
+gray_italic="\e[3;37m"
+gray_underlined="\e[4;37m"
+white="\e[0;97m"
+white_bold="\e[1;97m"
+white_light="\e[2;97m"
+white_italic="\e[3;97m"
+white_underlined="\e[4;97m"
+success="\e[1;30m[\e[0;32mDone\e[1;30m]\e[0m"
+fail="\e[1;30m[\e[0;31mFail\e[1;30m]\e[0m"
+}
+
+banner_palette () {
+ban_linux_big=" __       __   __   __   __    __  ___   ___
+|  |     |  | |  \ |  | |  |  |  | \  \ /  /
+|  |     |  | |   \|  | |  |  |  |  \  \u203e  /
+|  |____ |  | |  . .  | |  |  |  |   >   <
+|       ||  | |  |\   | |  |__|  |  /  _  \\
+|_______||__| |__| \__|  \______/  /__/ \__\\"
+ban_ubuntu="   __  ____                __
+  / / / / /_  __  ______  / /___  __
+ / / / / __ \/ / / / __ \/ __/ / / /
+/ /_/ / /_/ / /_/ / / / / /_/ /_/ /
+\____/_____/\____/_/ /_/\__/\____/"
+ban_linux="    __    _
+   / /   /_/___  __  ___  __
+  / /   / / __ \/ / / / |/ /
+ / /___/ / / / / /_/ /|   |
+/_____/_/_/ /_/\____//_/\_\\"
+ban_android="    ___              __           __    __
+   /   |  ____  ____/ /________  /_/___/ /
+  / /| | / __ \/ __  / ___/ __ \/ / __  /
+ / ___ |/ / / / /_/ / /  / /_/ / / /_/ /
+/_/  |_/_/ /_/\____/_/   \____/_/\____/"
+ban_mac="    __  ___              ____  _____    _  __
+   /  |/  /__________   / __ \/ ___/   | |/ /
+  / /|_/ / __  / ___/  / / / /\__ \    |   /
+ / /  / / /_/ / /__   / /_/ /___/ /   /   |
+/_/  /_/\____/\___/   \____//____/   /_/|_|"
+}
+
+linker () {
+if [ ! -f "/usr/bin/dynmotd-shell" ];
+then
+    ln -s "/usr/local/bin/dynmotd-shell" "/usr/bin/dynmotd-shell"
+fi
+}
+
+get_config () {
+if [ ! -d ~/.config ];
+then
+    mkdir ~/.config
+fi
+if [ ! -f "$configuration_file" ];
+then
+    echo -e $configuration_content >> $configuration_file
+fi
+}
+
+get_prefs () {
+source $configuration_file
+}
+
+get_stats () {
+get_sys_stats
+get_user_stats
+get_weather
+get_custom_cmd
+}
+
+get_sys_stats () {
+get_date_time
+get_hostname
+get_wlan_ip
+get_lan_ip
+get_kernel_ver
+get_users_stats
+get_mem_size
+}
+
+get_date_time () {
+date_time=`date`
+}
+
+get_hostname () {
+hostname_text=`hostname`
+}
+
+get_wlan_ip () {
+wlan_ip=`ifconfig wlan0 | grep 'inet addr:' | cut -d" " -f2 | awk '{print $1}'`
+}
+
+get_lan_ip () {
+lan_ip=`ifconfig eth0 | grep 'inet addr:' | cut -d" " -f2 | awk '{print $1}'`
+}
+
+get_kernel_ver () {
+kernel_version=`uname -r`
+}
+
+get_users_stats () {
+if [ "$FULLW" == "1" ];
+then
+    user_stats=`w | awk '{if(NR == 1)print substr($a,2); else print "" substr($a,1); }'`
+else
+    user_stats=`w | awk 'NR==1' | cut -c2- | cut -d" " -f2-8,10-12`
+fi
+}
+
+get_mem_size () {
+ram_size=`cat /proc/meminfo | grep MemTotal | awk {'print $2'}`
+}
+
+get_user_stats () {
+get_username
+get_last_login
+get_home_dir
+get_proc_count
+get_proc_limit
+}
+
+get_username () {
+username=`whoami`
+}
+
+get_last_login () {
+last_login=`last -n 2 -R $USERNAME | awk 'NR==2' | cut -d" " -f10-19`
+}
+
+get_home_dir () {
+home_path=~
+}
+
+get_proc_count () {
+process_count=`ps -Afl | wc -l`
+}
+
+get_proc_limit () {
+process_limit=`ulimit -u`
+}
+
+get_weather () {
+if [ "$WEATHER" == "1" ];
+then
+    get_weather_zip () {
+    weather_zip=$ZIP
+    }
+    
+    get_weather_location () {
+    weather_location=`weather $weather_zip | grep 'Current conditions at' | awk '{print $4}'`
+    }
+    
+    get_weather_temp () {
+    weather_temperature=`weather $weather_zip | grep 'Temperature:' | awk '{print $2}'`
+    }
+    
+    get_weather_conditions () {
+    weather_conditions=`weather $weather_zip | grep 'Weather:' | cut -d: -f2 | cut -c2-`
+    }
+    
+    get_weather_sky_conditions () {
+    weather_sky_conditions=`weather $weather_zip | grep 'Sky conditions:' | cut -d: -f2 | cut -c2-`
+    }
+    get_weather_zip
+    get_weather_location
+    get_weather_temp
+    get_weather_conditions
+    get_weather_sky_condtitions
+fi
+}
+
+get_custom_cmd () {
+if [ "$CUSTOM" == "1" ];
+then
+    get_custom_cmd_out () {
+    custom_command_output=`$custom_command`
+    }
+fi
+}
+
+print_ban () {
+echo -en "$header_color"
+
+print_cust_ban () {
+echo -e $cust_ban_text
+}
+
+print_ban_linux_big () {
+echo -e ban_linux_big
+}
+
+print_ban_ubuntu () {
+echo -e ban_ubuntu
+}
+
+print_ban_linux () {
+echo -e ban_linux
+}
+
+print_ban_android () {
+echo -e ban_android
+}
+
+print_ban_mac () {
+echo -e ban_mac
+}
+
+if [ "$PRINTBAN" == "1" ];
+then
+    get_ban () {
+    if [ "$CUSTBAN" == "1" ];
+    then
+        print_cust_ban
+    else
+    if [ "$BANNER" == "BANLINUXBIG" ];
+    then
+        print_ban_linux_big
+    fi
+    if [ "$BANNER" == "BANUBUNTU" ];
+    then
+        print_ban_ubuntu
+    fi
+    if [ "$BANNER" == "BANLINUX" ];
+    then
+        print_ban_linux
+    fi
+    if [ "$BANNER" == "BANANDROID" ];
+    then
+        print_ban_android
+    fi
+    if [ "$BANNER" == "BANMACOSX" ];
+    then
+        print_ban_mac
+    fi
+    fi
+    }
+fi
+}
+
+print_stats () {
+echo -e "$border_color  ┌──────────────┐
+$border_color┌─┤$header_color $string_sys_stats_header $border_color├───┬──────────────────────────────────────────────────────────
+$border_color│ └──────────────┘   │
+$border_color│ $title_color$string_sys_stats_date_time        $border_color│ $data_color$date_time
+$border_color│ $title_color$string_sys_stats_hostname           $border_color│ $data_color$hostname_text
+$border_color│ $title_color$string_sys_stats_wlan_ip            $border_color│ $data_color$wlan_ip
+$border_color│ $title_color$string_sys_stats_lan_ip             $border_color│ $data_color$lan_ip
+$border_color│ $title_color$string_sys_stats_kernel_ver             $border_color│ $data_color$kernel_version
+$border_color│ $title_color$string_sys_stats_mem_size             $border_color│ $data_color$ram_size
+$border_color│ $title_color$string_sys_stats_users_stats              $border_color│ $data_color$user_stats
+$border_color│ ┌─────────────┐    │
+$border_color├─┤$header_color $string_user_stats_header $border_color├────┼──────────────────────────────────────────────────────────
+$border_color│ └─────────────┘    │
+$border_color│ $title_color$string_user_stats_username           $border_color│ $data_color$username
+$border_color│ $title_color$string_user_stats_last_login         $border_color│ $data_color$last_login
+$border_color│ $title_color$string_user_stats_home_dir          $border_color│ $data_color$home_path
+$border_color│ $title_color$string_user_stats_proc          $border_color│ $data_color$process_count of $process_limit"
+
+if [ "$WEATHER" == "1" ];
+then
+    echo -e "$border_color│ ┌───────────────┐  │
+$border_color├─┤$header_color $string_weather_header $border_color├──┼──────────────────────────────────────────────────────────
+$border_color│ └───────────────┘  │"
+    if [ "$WEATHER_LOCATION" == "1" ];
+    then
+        echo -e "$border_color│ $title_color$string_weather_location           $border_color│ $data_color$weather_location, $weather_zip"
+    fi
+
+echo -e "$border_color│ $title_color$string_weather_temp        $border_color│ $data_color$weather_temperature
+$border_color│ $title_color$string_weather_conditions            $border_color│ $data_color$weather_conditions"
+
+    if [ "$WEATHER_SKY_CONDITIONS" == "1" ];
+    then
+        echo -e "$border_color│ $title_color$string_weather_sky_conditions                $border_color│ $data_color$weather_sky_conditions"
+    fi
+fi
+
+if [ "$CUSTOM" == "1" ];
+then
+    echo -e "$border_color│ ┌───────────────┐  │
+$border_color├─┤$header_color $string_custom_header $border_color├──┼──────────────────────────────────────────────────────────
+$border_color│ └───────────────┘  │
+$border_color│ $title_color$string_custom_title          $border_color│ $data_color$custom_command_output"
+fi
+
+echo -e "$border_color└────────────────────┴──────────────────────────────────────────────────────────"
+}
+
+finish () {
+unset_vars
+exit 0
+}
+
+init
+print_ban
+print_stats
+finish
