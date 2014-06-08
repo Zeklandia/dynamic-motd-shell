@@ -472,6 +472,7 @@ $border_color│ $title_color$string_custom_title          $border_color│ $dat
 fi
 
 echo -e "$border_color└────────────────────┴──────────────────────────────────────────────────────────"
+echo -en "$color_default"
 }
 
 finish () {
