@@ -275,11 +275,11 @@ hostname_text=`hostname`
 }
 
 get_wlan_ip () {
-wlan_ip=`ifconfig wlan0 | grep 'inet addr:' | cut -d" " -f2 | awk '{print $1}'`
+wlan_ip=`ifconfig wlan0 | grep 'inet addr:' | cut -d":" -f2 | awk '{print $1}'`
 }
 
 get_lan_ip () {
-lan_ip=`ifconfig eth0 | grep 'inet addr:' | cut -d" " -f2 | awk '{print $1}'`
+lan_ip=`ifconfig eth0 | grep 'inet addr:' | cut -d":" -f2 | awk '{print $1}'`
 }
 
 get_kernel_ver () {
